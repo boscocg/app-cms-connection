@@ -1,5 +1,5 @@
 // lib/schema-explorer.ts
-import { graphqlRequest, gql } from './graphql';
+import { graphqlRequest, gql } from "./graphql";
 
 // Definindo a query de introspecção aqui já que não está mais exportada do arquivo graphql.ts
 const INTROSPECTION_QUERY = gql`
@@ -21,17 +21,15 @@ const INTROSPECTION_QUERY = gql`
  */
 export async function exploreSchema() {
   try {
-    // Obter o esquema
-    const schemaInfo = await graphqlRequest(INTROSPECTION_QUERY) as {
+    const schemaInfo = (await graphqlRequest(INTROSPECTION_QUERY)) as {
       __schema: {
         queryType: {
           fields: Array<{ name: string; description?: string }>;
         };
       };
     };
-    console.log('Schema Query Types:', schemaInfo.__schema.queryType.fields);
-    
-    // Tentar obter a estrutura de pages
+    console.log("Schema Query Types:", schemaInfo.__schema.queryType.fields);
+
     const pagesStructure = await graphqlRequest(gql`
       query PageTypeStructure {
         __type(name: "Page") {
@@ -51,7 +49,7 @@ export async function exploreSchema() {
         }
       }
     `);
-    console.log('Pages Structure:', pagesStructure);
+    console.log("Pages Structure:", pagesStructure);
 
     // Tentar uma consulta simples para pages
     const pagesQuery = await graphqlRequest(gql`
@@ -61,15 +59,15 @@ export async function exploreSchema() {
         }
       }
     `);
-    console.log('Pages Query Result:', pagesQuery);
-    
+    console.log("Pages Query Result:", pagesQuery);
+
     return {
       schema: schemaInfo,
       pagesStructure,
-      pagesQuery
+      pagesQuery,
     };
   } catch (error) {
-    console.error('Error exploring schema:', error);
+    console.error("Error exploring schema:", error);
     throw error;
   }
 }

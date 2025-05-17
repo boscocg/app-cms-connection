@@ -1,3 +1,3 @@
 // services/index.ts
-export * from "./page.service";
-export * from "./home.service";
+export * from './project.service';
+export * from './storage.service';

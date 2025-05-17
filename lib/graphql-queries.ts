@@ -1,53 +1,75 @@
 // lib/graphql-queries.ts
 import { gql } from 'graphql-request';
 
-// Consulta para buscar todos os slugs para as páginas estáticas
-export const GET_ALL_SLUGS = gql`
-  query GetAllSlugs {
-    pages {
+// Consulta para buscar todos os projetos e suas refs
+export const GET_ALL_PROJECTS_REFS = gql`
+  query GetAllProjectsRefs {
+    projects {
       documentId
-      slug
+      Ref
+      Title
     }
   }
 `;
 
-// Consulta para buscar uma página específica com seus blocos
-export const GET_PAGE_BY_SLUG = gql`
-  query GetPageBySlug($slug: String!) {
-    pages(filters: { slug: { eq: $slug } }) {
+// Consulta para buscar um projeto específico por ref
+export const GET_PROJECT = gql`
+  query GetProject($ref: String!) {
+    projects(filters: { Ref: { eq: $ref } }) {
       documentId
-      title
-      slug
-      blocks {
-        __typename
-        ... on ComponentSharedTextBlock {
-          id
-          text
-        }
-        ... on ComponentSharedImageBlock {
-          id
-          media {
-            url
-            alternativeText
-          }
-        }
-        ... on ComponentSharedCta {
-          id
-          label
+      Title
+      Ref
+      Images {
+        client_image {
           url
+          name
+        }
+        client_cover_image {
+          url
+          name
+        }
+        thumbnail_path {
+          url
+          name
+        }
+        fallback_thumbnail {
+          url
+          name
+        }
+        favicon {
+          url
+          name
+        }
+        client_logo1 {
+          url
+          name
+        }
+        client_logo2 {
+          url
+          name
+        }
+        client_transition_image {
+          url
+          name
         }
       }
-    }
-  }
-`;
-
-// Consulta para buscar todas as páginas para a página inicial
-export const GET_ALL_PAGES = gql`
-  query GetAllPages {
-    pages {
-      documentId
-      title
-      slug
+      SEO {
+        title
+        description
+        image {
+          url
+          name
+        }
+      }
+      Styles {
+        font_family
+        primary_color
+        secondary_color
+        font_color
+        background_color
+        font_color_dark
+        mode
+      }
     }
   }
 `;
