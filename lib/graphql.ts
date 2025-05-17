@@ -6,7 +6,6 @@ import {
   GET_ALL_PAGES 
 } from './graphql-queries';
 
-// Re-exportamos as consultas e o gql para uso em outros arquivos
 export { 
   GET_ALL_SLUGS, 
   GET_PAGE_BY_SLUG, 
@@ -17,8 +16,7 @@ export {
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const GRAPHQL_ENDPOINT = `${API_URL}/graphql`;
 
-// Função para fazer chamadas GraphQL
-export async function graphqlRequest<T = any, V = Record<string, any>>(
+export async function graphqlRequest<T = unknown, V extends object = Record<string, unknown>>(
   query: string, 
   variables?: V
 ): Promise<T> {

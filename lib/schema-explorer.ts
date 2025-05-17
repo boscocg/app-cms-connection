@@ -22,7 +22,13 @@ const INTROSPECTION_QUERY = gql`
 export async function exploreSchema() {
   try {
     // Obter o esquema
-    const schemaInfo = await graphqlRequest(INTROSPECTION_QUERY);
+    const schemaInfo = await graphqlRequest(INTROSPECTION_QUERY) as {
+      __schema: {
+        queryType: {
+          fields: Array<{ name: string; description?: string }>;
+        };
+      };
+    };
     console.log('Schema Query Types:', schemaInfo.__schema.queryType.fields);
     
     // Tentar obter a estrutura de pages
