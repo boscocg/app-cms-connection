@@ -10,8 +10,8 @@ export default async function Home() {
   return (
     <main className="max-w-4xl mx-auto p-8">
       <header className="mb-8 text-center">
-        <h1 className="text-3xl font-bold mb-2 text-gray-900">Projetos Disponíveis</h1>
-        <p className="text-gray-600">Selecione um projeto para visualizar</p>
+        <h1 className="text-3xl font-bold mb-2 text-primary">Projetos Disponíveis</h1>
+        <p className="text-primary">Selecione um projeto para visualizar</p>
       </header>
 
       <div className="bg-white shadow-sm rounded-lg p-6">
