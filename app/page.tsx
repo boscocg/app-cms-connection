@@ -1,35 +1,20 @@
 // app/page.tsx
-import Link from 'next/link';
-import { graphqlRequest, GET_ALL_PAGES } from '@/lib/graphql';
-import type { GetAllPagesQuery } from '@/types/graphql';
+import { PageList } from "@/components";
+import { getAllPages } from "@/services";
 
 export default async function Home() {
-  try {
-    const data = await graphqlRequest<GetAllPagesQuery>(GET_ALL_PAGES);
-    const pages = data.pages || [];
-    
-    return (
-      <main className="p-8">
-        <h1 className="text-3xl font-bold mb-6">Páginas Disponíveis</h1>
-        
-        <ul className="space-y-2">
-          {pages.map((page, index) => (
-            page ? (
-              <li key={page.documentId || index} className="border-b pb-2">
-                <Link 
-                  href={`/${page.slug}`}
-                  className="text-blue-600 hover:underline text-lg"
-                >
-                  {page.title || page.slug || 'Página sem título'}
-                </Link>
-              </li>
-            ) : null
-          ))}
-        </ul>
-      </main>
-    );
-  } catch (error) {
-    console.error('Error fetching pages:', error);
-    return <div>Erro ao carregar as páginas</div>;
-  }
+  const pages = await getAllPages();
+
+  return (
+    <main className="max-w-4xl mx-auto p-8">
+      <header className="mb-8 text-center">
+        <h1 className="text-3xl font-bold mb-2 text-gray-900">Páginas Disponíveis</h1>
+        <p className="text-gray-600">Selecione uma página para visualizar seu conteúdo</p>
+      </header>
+
+      <div className="bg-white shadow-sm rounded-lg p-6">
+        <PageList pages={pages} />
+      </div>
+    </main>
+  );
 }
