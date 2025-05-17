@@ -29,7 +29,7 @@ function ThemedPage() {
       color: theme.primaryColor,
       minHeight: '100vh',
       padding: '2rem',
-      fontFamily: theme.fontFamily
+      fontFamily: `${theme.fontFamily}, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif`
     }}>
       <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>
         Demonstração do Tema
@@ -48,7 +48,8 @@ function ThemedPage() {
             backgroundColor: theme.backgroundColor,
             color: theme.primaryColor,
             border: `1px solid ${theme.primaryColor}`,
-            borderRadius: '0.25rem'
+            borderRadius: '0.25rem',
+            fontFamily: `${theme.fontFamily}, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif`
           }}
         >
           {projects.map(title => (
@@ -63,12 +64,33 @@ function ThemedPage() {
         padding: '1.5rem',
         marginBottom: '1.5rem'
       }}>
-        <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Detalhes do Tema</h2>
+        <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem', fontWeight: 'bold' }}>
+          Detalhes do Tema
+        </h2>
         <p style={{ marginBottom: '0.5rem' }}><strong>Modo:</strong> {theme.mode}</p>
         <p style={{ marginBottom: '0.5rem' }}><strong>Cor Primária:</strong> {theme.primaryColor}</p>
         <p style={{ marginBottom: '0.5rem' }}><strong>Cor Secundária:</strong> {theme.secondaryColor}</p>
         <p style={{ marginBottom: '0.5rem' }}><strong>Cor de Fundo:</strong> {theme.backgroundColor}</p>
         <p style={{ marginBottom: '0.5rem' }}><strong>Fonte:</strong> {theme.fontFamily}</p>
+      </div>
+      
+      <div style={{ 
+        border: `1px solid ${theme.primaryColor}`,
+        borderRadius: '0.5rem',
+        padding: '1.5rem',
+        marginBottom: '1.5rem'
+      }}>
+        <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem', fontWeight: 'bold' }}>
+          Exemplo de Tipografia
+        </h2>
+        <p style={{ marginBottom: '0.5rem' }}>Texto normal usando a fonte {theme.fontFamily}</p>
+        <p style={{ marginBottom: '0.5rem', fontWeight: 'bold' }}>Texto em negrito</p>
+        <p style={{ marginBottom: '0.5rem', fontStyle: 'italic' }}>Texto em itálico</p>
+        <p style={{ marginBottom: '0.5rem' }}>
+          ABCDEFGHIJKLMNOPQRSTUVWXYZ<br />
+          abcdefghijklmnopqrstuvwxyz<br />
+          0123456789
+        </p>
       </div>
       
       <div style={{ 
@@ -81,7 +103,8 @@ function ThemedPage() {
           color: theme.backgroundColor,
           padding: '0.5rem 1rem',
           border: 'none',
-          borderRadius: '0.25rem'
+          borderRadius: '0.25rem',
+          fontFamily: `${theme.fontFamily}, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif`
         }}>
           Botão Primário
         </button>
@@ -91,7 +114,8 @@ function ThemedPage() {
           color: theme.backgroundColor,
           padding: '0.5rem 1rem',
           border: 'none',
-          borderRadius: '0.25rem'
+          borderRadius: '0.25rem',
+          fontFamily: `${theme.fontFamily}, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif`
         }}>
           Botão Secundário
         </button>
@@ -118,7 +142,10 @@ export default function ExamplePage() {
   // Se não há projetos, mostrar mensagem
   if (availableProjects.length === 0) {
     return (
-      <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
+      <div style={{ 
+        padding: '2rem', 
+        fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif'
+      }}>
         <h1 style={{ fontSize: '2rem', color: '#1e40af', marginBottom: '1rem' }}>
           Demonstração do Tema
         </h1>

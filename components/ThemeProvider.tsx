@@ -33,6 +33,50 @@ const ThemeContext = createContext<ThemeContextType>(defaultTheme);
 export const useTheme = () => useContext(ThemeContext);
 
 /**
+ * Carrega a fonte no documento se necessário
+ */
+function loadFont(fontFamily: string) {
+  // Não carregue fontes no servidor
+  if (typeof document === 'undefined') return;
+  
+  // Normalize o nome da fonte e verifique se é uma fonte que precisa ser carregada
+  const normalizedFont = fontFamily.toLowerCase();
+  
+  // Lista de fontes comuns que precisamos carregar do Google Fonts
+  const googleFonts = [
+    'roboto',
+    'open sans',
+    'lato',
+    'montserrat',
+    'raleway',
+    'oswald',
+    'poppins',
+    'nunito',
+    'merriweather',
+    'ubuntu'
+  ];
+  
+  // Verifique se a fonte já está carregada
+  const fontLink = document.querySelector(`link[href*="${normalizedFont}"]`);
+  if (fontLink) return;
+  
+  // Verifique se é uma fonte que devemos carregar
+  const shouldLoad = googleFonts.some(font => normalizedFont.includes(font));
+  if (!shouldLoad) return;
+  
+  // Preparar o nome da fonte para a URL (substituir espaços por +)
+  const fontForUrl = normalizedFont.replace(/\s+/g, '+');
+  
+  // Criar link para o Google Fonts
+  const link = document.createElement('link');
+  link.href = `https://fonts.googleapis.com/css2?family=${fontForUrl}:wght@300;400;500;700&display=swap`;
+  link.rel = 'stylesheet';
+  
+  // Adicionar ao head
+  document.head.appendChild(link);
+}
+
+/**
  * Provedor de tema que usa os estilos do projeto
  */
 export function ThemeProvider({ 
@@ -62,6 +106,11 @@ export function ThemeProvider({
   // Adicionar as variáveis CSS de tema
   useEffect(() => {
     if (!loading && !error && styles) {
+      // Tente carregar a fonte se necessário
+      if (theme.fontFamily && theme.fontFamily !== 'sans-serif') {
+        loadFont(theme.fontFamily);
+      }
+      
       // Definir variáveis CSS personalizadas
       const root = document.documentElement;
       root.style.setProperty('--primary-color', theme.primaryColor);
@@ -98,7 +147,8 @@ export function ThemeProvider({
         ? theme.fontColorDark 
         : theme.fontColor;
       
-      document.body.style.fontFamily = theme.fontFamily;
+      // Aplicar a família de fonte incluindo fallbacks para melhor compatibilidade
+      document.body.style.fontFamily = `${theme.fontFamily}, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`;
     }
     
     // Cleanup ao desmontar

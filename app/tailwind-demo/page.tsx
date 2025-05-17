@@ -23,6 +23,7 @@ function TailwindDemo() {
         .theme-primary-text { color: ${theme.backgroundColor} !important; }
         .theme-secondary-bg { background-color: ${theme.secondaryColor} !important; }
         .theme-border { border-color: ${theme.primaryColor} !important; }
+        .theme-font { font-family: ${theme.fontFamily}, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important; }
       `;
       document.head.appendChild(style);
       
@@ -33,7 +34,7 @@ function TailwindDemo() {
   }, [theme]);
   
   return (
-    <div className="theme-bg theme-text p-6 rounded-lg shadow-lg">
+    <div className="theme-bg theme-text theme-font p-6 rounded-lg shadow-lg">
       <h1 className="text-3xl font-bold mb-4">Demonstração com Tailwind</h1>
       <p className="mb-6">Esta página usa classes Tailwind com as variáveis do tema. Fundo na cor backgroundColor e texto na cor primary.</p>
       
@@ -63,6 +64,20 @@ function TailwindDemo() {
             </button>
           </div>
         </div>
+      </div>
+      
+      <div className="theme-bg theme-text p-4 rounded theme-border border mb-6">
+        <h2 className="text-xl font-bold mb-2">Exemplo de Tipografia</h2>
+        <p className="mb-3 text-lg">Este texto usa a fonte definida no tema: <strong>{theme.fontFamily}</strong></p>
+        <p className="mb-3">
+          ABCDEFGHIJKLMNOPQRSTUVWXYZ<br />
+          abcdefghijklmnopqrstuvwxyz<br />
+          0123456789
+        </p>
+        <p className="italic mb-3">Este texto está em itálico</p>
+        <p className="font-bold mb-3">Este texto está em negrito</p>
+        <h4 className="text-lg font-semibold mb-2">Exemplo de texto em tamanho maior</h4>
+        <div className="text-sm">Exemplo de texto em tamanho menor</div>
       </div>
       
       <div className="theme-bg theme-text p-4 rounded theme-border border mb-6">
@@ -136,7 +151,7 @@ function ThemedApp() {
       color: theme.primaryColor,
       minHeight: '100vh',
       padding: '2rem',
-      fontFamily: theme.fontFamily
+      fontFamily: `${theme.fontFamily}, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif`
     }}>
       <div className="max-w-4xl mx-auto">
         <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>
@@ -157,7 +172,8 @@ function ThemedApp() {
               color: theme.primaryColor,
               border: `1px solid ${theme.primaryColor}`,
               borderRadius: '0.25rem',
-              marginBottom: '2rem'
+              marginBottom: '2rem',
+              fontFamily: `${theme.fontFamily}, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif`
             }}
           >
             {projects.map(title => (
@@ -190,7 +206,10 @@ export default function TailwindDemoPage() {
   // Se não há projetos, mostrar mensagem
   if (availableProjects.length === 0) {
     return (
-      <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
+      <div style={{ 
+        padding: '2rem', 
+        fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif'
+      }}>
         <h1 style={{ fontSize: '2rem', color: '#1e40af', marginBottom: '1rem' }}>
           Demonstração do Tema
         </h1>
