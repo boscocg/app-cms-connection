@@ -16,7 +16,7 @@ export function ProjectDetails() {
     return (
       <div className="space-y-8">
         <section className="bg-primary bg-opacity-5 p-6 rounded-lg">
-          <h2 className="text-2xl font-bold mb-4 text-primary">Informações Gerais</h2>
+          <h2 className="text-2xl font-bold mb-4 text-background">Informações Gerais</h2>
           <p>Projeto não encontrado ou não carregado.</p>
         </section>
       </div>
@@ -74,7 +74,7 @@ export function ProjectDetails() {
       </section>
 
       {project.Styles && (
-        <section className="p-6 border border-primary border-opacity-20 rounded-lg">
+        <section className="p-6 border border-primary border-opacity-20 rounded-lg bg-primary">
           <h2 className="text-2xl font-bold mb-4 text-primary">Estilos</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -155,12 +155,18 @@ export function ProjectDetails() {
 
                 <div className="mt-4">
                   <div className="flex flex-col space-y-2">
-                    <button className="px-4 py-2 bg-primary text-white rounded">
+                    <button
+                      style={{ backgroundColor: project.Styles.background_color ?? undefined }}
+                      className="px-4 py-2 text-white rounded"
+                    >
                       Botão Primário
                     </button>
 
                     <button
-                      style={{ backgroundColor: theme.secondaryColor, color: "white" }}
+                      style={{
+                        backgroundColor: project.Styles.primary_color ?? undefined,
+                        color: project.Styles.secondary_color ?? undefined,
+                      }}
                       className="px-4 py-2 rounded"
                     >
                       Botão Secundário

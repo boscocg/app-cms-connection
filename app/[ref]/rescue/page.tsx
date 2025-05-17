@@ -11,7 +11,7 @@ export const metadata: Metadata = {
  */
 export default function RescuePage() {
   return (
-    <ProjectContainer showNavigation={false}>
+    <ProjectContainer showNavigation={true}>
       <div className="flex items-center justify-center py-16">
         <div className="text-center max-w-lg">
           <h1 className="text-3xl font-bold mb-4 text-primary">Dados Salvos!</h1>
