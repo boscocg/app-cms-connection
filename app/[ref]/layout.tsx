@@ -19,7 +19,9 @@ type LayoutParams = {
 export async function generateMetadata({
   params,
 }: Omit<LayoutParams, "children">): Promise<Metadata> {
-  const ref = params.ref;
+  // Aguardar params antes de acessar suas propriedades
+  const resolvedParams = await params;
+  const ref = resolvedParams.ref;
 
   try {
     // Buscar os dados do projeto para SEO
@@ -71,8 +73,9 @@ export async function generateMetadata({
  * Layout compartilhado para todas as rotas dentro de [ref]
  */
 export default async function ProjectLayout({ params, children }: LayoutParams) {
-  // Extrair o ref para evitar acesso direto a params.ref dentro da função assíncrona
-  const ref = params.ref;
+  // Aguardar params antes de acessar suas propriedades
+  const resolvedParams = await params;
+  const ref = resolvedParams.ref;
 
   // Buscar os dados do projeto
   const data = await graphqlRequest<GetProjectQuery>(GET_PROJECT, { ref });
