@@ -6,102 +6,146 @@ import { ThemeProvider, useTheme } from '@/components';
 import { projectStorage } from '@/services';
 
 /**
- * Componente de exemplo para demonstrar o uso do ThemeProvider
+ * Página com tema aplicado
  */
-function ThemedContent() {
-  // Usar o hook de tema
+function ThemedPage() {
   const theme = useTheme();
+  const [projects, setProjects] = useState<string[]>([]);
+  const [selectedProject, setSelectedProject] = useState<string>('');
   
+  // Carregar projetos do localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const keys = projectStorage.getStoredProjectKeys();
+      const titles = keys.map(k => k.replace('project_', ''));
+      setProjects(titles);
+      if (titles.length > 0) setSelectedProject(titles[0]);
+    }
+  }, []);
+
   return (
     <div style={{ 
-      color: theme.fontColor,
-      fontFamily: theme.fontFamily,
       backgroundColor: theme.backgroundColor,
+      color: theme.primaryColor,
+      minHeight: '100vh',
       padding: '2rem',
-      borderRadius: '0.5rem',
-      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+      fontFamily: theme.fontFamily
     }}>
-      <h2 style={{ color: theme.primaryColor, marginBottom: '1rem' }}>
-        Exemplo de Conteúdo com Tema
-      </h2>
-      <p style={{ marginBottom: '1rem' }}>
-        Este conteúdo está usando os estilos do projeto selecionado.
-      </p>
-      <button style={{ 
-        backgroundColor: theme.primaryColor,
-        color: '#fff',
-        padding: '0.5rem 1rem',
-        borderRadius: '0.25rem',
-        border: 'none',
-        cursor: 'pointer',
+      <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>
+        Demonstração do Tema
+      </h1>
+      
+      <div style={{ marginBottom: '2rem' }}>
+        <label style={{ display: 'block', marginBottom: '0.5rem' }}>
+          Selecione um Projeto:
+        </label>
+        <select 
+          value={selectedProject}
+          onChange={(e) => setSelectedProject(e.target.value)}
+          style={{
+            width: '100%',
+            padding: '0.5rem',
+            backgroundColor: theme.backgroundColor,
+            color: theme.primaryColor,
+            border: `1px solid ${theme.primaryColor}`,
+            borderRadius: '0.25rem'
+          }}
+        >
+          {projects.map(title => (
+            <option key={title} value={title}>{title}</option>
+          ))}
+        </select>
+      </div>
+      
+      <div style={{ 
+        border: `1px solid ${theme.primaryColor}`,
+        borderRadius: '0.5rem',
+        padding: '1.5rem',
+        marginBottom: '1.5rem'
       }}>
-        Botão Primário
-      </button>
-      <div style={{ marginTop: '1rem' }}>
-        <h3 style={{ color: theme.secondaryColor, marginBottom: '0.5rem' }}>
-          Detalhes do Tema:
-        </h3>
-        <ul style={{ listStyleType: 'none', padding: 0 }}>
-          <li><strong>Cor Primária:</strong> {theme.primaryColor}</li>
-          <li><strong>Cor Secundária:</strong> {theme.secondaryColor}</li>
-          <li><strong>Fonte:</strong> {theme.fontFamily}</li>
-          <li><strong>Modo:</strong> {theme.mode}</li>
-        </ul>
+        <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Detalhes do Tema</h2>
+        <p style={{ marginBottom: '0.5rem' }}><strong>Modo:</strong> {theme.mode}</p>
+        <p style={{ marginBottom: '0.5rem' }}><strong>Cor Primária:</strong> {theme.primaryColor}</p>
+        <p style={{ marginBottom: '0.5rem' }}><strong>Cor Secundária:</strong> {theme.secondaryColor}</p>
+        <p style={{ marginBottom: '0.5rem' }}><strong>Cor de Fundo:</strong> {theme.backgroundColor}</p>
+        <p style={{ marginBottom: '0.5rem' }}><strong>Fonte:</strong> {theme.fontFamily}</p>
+      </div>
+      
+      <div style={{ 
+        display: 'flex',
+        gap: '1rem',
+        marginBottom: '1.5rem'
+      }}>
+        <button style={{ 
+          backgroundColor: theme.primaryColor,
+          color: theme.backgroundColor,
+          padding: '0.5rem 1rem',
+          border: 'none',
+          borderRadius: '0.25rem'
+        }}>
+          Botão Primário
+        </button>
+        
+        <button style={{ 
+          backgroundColor: theme.secondaryColor,
+          color: theme.backgroundColor,
+          padding: '0.5rem 1rem',
+          border: 'none',
+          borderRadius: '0.25rem'
+        }}>
+          Botão Secundário
+        </button>
       </div>
     </div>
   );
 }
 
 /**
- * Página de exemplo
+ * Página de exemplo simplificada
  */
 export default function ExamplePage() {
-  const [selectedProject, setSelectedProject] = useState<string>('');
   const [availableProjects, setAvailableProjects] = useState<string[]>([]);
   
-  // Carregar projetos disponíveis no localStorage
+  // Verificar se existem projetos
   useEffect(() => {
-    const keys = projectStorage.getStoredProjectKeys();
-    const projectTitles = keys.map(key => {
-      // Remover o prefixo 'project_'
-      return key.replace('project_', '');
-    });
-    setAvailableProjects(projectTitles);
+    if (typeof window !== 'undefined') {
+      const keys = projectStorage.getStoredProjectKeys();
+      const titles = keys.map(k => k.replace('project_', ''));
+      setAvailableProjects(titles);
+    }
   }, []);
   
-  return (
-    <div className="max-w-4xl mx-auto p-8">
-      <h1 className="text-3xl font-bold mb-6">Exemplo de Uso do Tema</h1>
-      
-      <div className="mb-8">
-        <label className="block mb-2 text-lg font-medium">Selecione um Projeto:</label>
-        <select 
-          value={selectedProject}
-          onChange={(e) => setSelectedProject(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded-md"
+  // Se não há projetos, mostrar mensagem
+  if (availableProjects.length === 0) {
+    return (
+      <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
+        <h1 style={{ fontSize: '2rem', color: '#1e40af', marginBottom: '1rem' }}>
+          Demonstração do Tema
+        </h1>
+        <p style={{ marginBottom: '1rem' }}>
+          Nenhum projeto disponível. Visite a página inicial para selecionar um projeto.
+        </p>
+        <a 
+          href="/"
+          style={{
+            display: 'inline-block',
+            padding: '0.5rem 1rem',
+            backgroundColor: '#3b82f6',
+            color: 'white',
+            borderRadius: '0.25rem',
+            textDecoration: 'none'
+          }}
         >
-          <option value="">Selecione um projeto...</option>
-          {availableProjects.map((title) => (
-            <option key={title} value={title}>
-              {title}
-            </option>
-          ))}
-        </select>
+          Ir para página inicial
+        </a>
       </div>
-      
-      {selectedProject ? (
-        <ThemeProvider projectTitle={selectedProject}>
-          <ThemedContent />
-        </ThemeProvider>
-      ) : (
-        <div className="bg-gray-100 p-8 rounded-md text-center">
-          <p className="text-gray-600">
-            {availableProjects.length > 0 
-              ? 'Selecione um projeto para ver o tema aplicado' 
-              : 'Nenhum projeto disponível no localStorage. Visite a página inicial e selecione um projeto primeiro.'}
-          </p>
-        </div>
-      )}
-    </div>
+    );
+  }
+  
+  // Se há projetos, mostrar a página com tema
+  return (
+    <ThemeProvider projectTitle={availableProjects[0]}>
+      <ThemedPage />
+    </ThemeProvider>
   );
 }

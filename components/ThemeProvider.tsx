@@ -1,7 +1,7 @@
 // components/ThemeProvider.tsx
 'use client';
 
-import React, { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext, ReactNode, useEffect } from 'react';
 import { useProject } from '@/hooks';
 
 // Criar um contexto para o tema
@@ -16,12 +16,12 @@ type ThemeContextType = {
 };
 
 const defaultTheme: ThemeContextType = {
-  primaryColor: '#3b82f6',
-  secondaryColor: '#1e40af',
+  primaryColor: '#3b82f6', // azul
+  secondaryColor: '#1e40af', // azul escuro
   fontFamily: 'sans-serif',
-  backgroundColor: '#ffffff',
-  fontColor: '#111827',
-  fontColorDark: '#f3f4f6',
+  backgroundColor: '#ffffff', // branco
+  fontColor: '#111827', // quase preto
+  fontColorDark: '#f3f4f6', // quase branco
   mode: 'light',
 };
 
@@ -60,23 +60,62 @@ export function ThemeProvider({
   };
   
   // Adicionar as variáveis CSS de tema
-  React.useEffect(() => {
+  useEffect(() => {
     if (!loading && !error && styles) {
+      // Definir variáveis CSS personalizadas
       const root = document.documentElement;
       root.style.setProperty('--primary-color', theme.primaryColor);
       root.style.setProperty('--secondary-color', theme.secondaryColor);
       root.style.setProperty('--font-family', theme.fontFamily);
-      root.style.setProperty('--background-color', theme.backgroundColor);
-      root.style.setProperty('--font-color', theme.fontColor);
-      root.style.setProperty('--font-color-dark', theme.fontColorDark);
       
-      // Definir o tema claro/escuro
+      // Configurar o tema com base no modo definido no CMS
       if (theme.mode === 'dark') {
-        document.body.classList.add('dark-mode');
+        // Modo escuro
+        root.style.setProperty('--bg-color', theme.backgroundColor === '#ffffff' ? '#1f2937' : theme.backgroundColor);
+        root.style.setProperty('--text-color', theme.fontColorDark);
+        
+        // Adicionar classe dark para o suporte ao Tailwind
+        document.body.classList.add('dark');
+        // Remover qualquer classe light que possa ter sido adicionada
+        document.body.classList.remove('light');
       } else {
-        document.body.classList.remove('dark-mode');
+        // Modo claro
+        root.style.setProperty('--bg-color', theme.backgroundColor);
+        root.style.setProperty('--text-color', theme.fontColor);
+        
+        // Remover classe dark
+        document.body.classList.remove('dark');
+        // Adicionar classe light (opcional)
+        document.body.classList.add('light');
       }
+      
+      // Aplicar estilos base ao body
+      document.body.style.backgroundColor = theme.mode === 'dark' 
+        ? (theme.backgroundColor === '#ffffff' ? '#111827' : theme.backgroundColor)
+        : theme.backgroundColor;
+      
+      document.body.style.color = theme.mode === 'dark' 
+        ? theme.fontColorDark 
+        : theme.fontColor;
+      
+      document.body.style.fontFamily = theme.fontFamily;
     }
+    
+    // Cleanup ao desmontar
+    return () => {
+      document.body.classList.remove('dark');
+      document.body.classList.remove('light');
+      document.body.style.backgroundColor = '';
+      document.body.style.color = '';
+      document.body.style.fontFamily = '';
+      
+      const root = document.documentElement;
+      root.style.removeProperty('--primary-color');
+      root.style.removeProperty('--secondary-color');
+      root.style.removeProperty('--font-family');
+      root.style.removeProperty('--bg-color');
+      root.style.removeProperty('--text-color');
+    };
   }, [loading, error, styles, theme]);
   
   return (
