@@ -1,51 +1,39 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // app/[slug]/page.tsx
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+import { GET_ALL_SLUGS, GET_PAGE_BY_SLUG, graphqlRequest } from '@/lib/graphql';
+import { notFound } from 'next/navigation';
 
 export async function generateStaticParams() {
-  const res = await fetch(`${API_URL}/api/pages`);
-  const json = await res.json();
-  return json.data.map((page: any) => ({ slug: page.slug || page.attributes.slug }));
+  try {
+    const { pages } = await graphqlRequest(GET_ALL_SLUGS);
+    return pages.map((page: any) => ({
+      slug: page.slug,
+    }));
+  } catch (error) {
+    console.error('Error fetching pages:', error);
+    return [];
+  }
 }
 
-export default async function Page({ params }: { params: { slug: string } }) {
-  const res = await fetch(
-    `${API_URL}/api/pages?filters[slug][$eq]=${params.slug}&populate[blocks][populate]=*`, 
-    { cache: "no-store" }
-  );
-  const json = await res.json();
-  const page = json.data?.[0];
-
-  if (!page) return <div>Página não encontrada</div>;
-
-  const { title, blocks } = page;
-
-  return (
-    <main className="p-8">
-      <h1 className="text-3xl font-bold mb-6">{title}</h1>
-      {blocks?.map((block: any, i: number) => (
-        <DynamicBlock key={i} block={block} />
-      ))}
-    </main>
-  );
-}
-
+// Componente para lidar com os blocos dinâmicos
 function DynamicBlock({ block }: { block: any }) {
-  switch (block.__component) {
-    case "shared.text-block":
+  // Identificamos o tipo do bloco usando __typename
+  switch (block.__typename) {
+    case 'ComponentSharedTextBlock':
       return <p className="mb-4">{block.text}</p>;
 
-    case "shared.image-block":
-      const media = block.media?.[0];
-      const imageUrl = media?.url ? `${process.env.NEXT_PUBLIC_API_URL}${media.url}` : "";
+    case 'ComponentSharedImageBlock':
+      const imageUrl = block.media?.url 
+        ? `${block.media.url.startsWith('http') ? '' : process.env.NEXT_PUBLIC_API_URL}${block.media.url}` 
+        : '';
+      
       return imageUrl ? (
         <div className="mb-4">
-          <img src={imageUrl} alt={media?.alternativeText || ""} className="max-w-full rounded-md" />
+          <img src={imageUrl} alt={block.media?.alternativeText || ''} className="max-w-full rounded-md" />
         </div>
       ) : null;
 
-    case "shared.cta":
+    case 'ComponentSharedCta':
       return (
         <a
           href={block.url}
@@ -56,6 +44,37 @@ function DynamicBlock({ block }: { block: any }) {
       );
 
     default:
-      return <pre className="bg-red-100 p-4">Bloco não suportado: {block.__component}</pre>;
+      return <pre className="bg-red-100 p-4">Bloco não suportado: {block.__typename}</pre>;
   }
+}
+
+async function getPageData(slug: string) {
+  try {
+    const { pages } = await graphqlRequest(GET_PAGE_BY_SLUG, { slug });
+    return pages?.[0] || null;
+  } catch (error) {
+    console.error('Error fetching page:', error);
+    return null;
+  }
+}
+
+export default async function Page({ params }: { params: { slug: string } }) {
+  const pageData = await getPageData(params.slug);
+
+  console.log('joao', pageData);
+  
+  if (!pageData) {
+    return notFound();
+  }
+
+  const { title, blocks = [] } = pageData;
+
+  return (
+    <main className="p-8">
+      <h1 className="text-3xl font-bold mb-6">{title}</h1>
+      {blocks.map((block: any, i: number) => (
+        <DynamicBlock key={i} block={block} />
+      ))}
+    </main>
+  );
 }
